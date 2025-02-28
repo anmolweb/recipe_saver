@@ -29,33 +29,43 @@ const firebaseConfig = {
   /* -----------------------------
      Biometric Authentication
   ------------------------------ */
-  async function biometricLogin() {
-    if (!window.PublicKeyCredential) {
-      authMessage.textContent =
-        "Biometric authentication is not supported on this browser.";
-      return;
-    }
-    try {
-      const publicKey = {
-        challenge: Uint8Array.from("randomChallengeString", (c) =>
-          c.charCodeAt(0)
-        ),
-        timeout: 60000,
-        userVerification: "preferred"
-      };
-      const credential = await navigator.credentials.get({ publicKey });
-      if (credential) {
-        authMessage.textContent = "Authentication successful!";
-        authSection.style.display = "none";
-        appSection.style.display = "block";
-        loadRecipes();
-      }
-    } catch (error) {
-      authMessage.textContent = "Authentication failed. Please try again.";
-      console.error(error);
-    }
-  }
   
+  // ===== Biometric Registration (WebAuthn) =====
+  bioRegisterBtn.addEventListener("click", async () => {
+    const publicKeyCredentialCreationOptions = {
+      challenge: Uint8Array.from("randomChallengeForReg", c => c.charCodeAt(0)),
+      rp: {
+        name: "recipe saver App",
+        id: window.location.hostname  // Use 'localhost' during development if needed.
+      },
+      user: {
+        id: Uint8Array.from("uniqueUserId", c => c.charCodeAt(0)),
+        name: "user@example.com",
+        displayName: "User"
+      },
+      pubKeyCredParams: [
+        { type: "public-key", alg: -7 },   // ES256
+        { type: "public-key", alg: -257 }  // RS256
+      ],
+      authenticatorSelection: {
+        authenticatorAttachment: "platform",
+        userVerification: "preferred"
+      },
+      timeout: 60000,
+      attestation: "none"
+    };
+
+    try {
+      const credential = await navigator.credentials.create({ publicKey: publicKeyCredentialCreationOptions });
+      console.log("Biometric registration credential:", credential);
+      bioFeedback.textContent = "Biometric registration successful!";
+      onAuthenticated("demoUser");
+    } catch (error) {
+      console.error("Biometric registration error:", error);
+      bioFeedback.textContent = "Biometric registration failed.";
+    }
+  });
+
   bioAuthBtn.addEventListener("click", biometricLogin);
   
   
