@@ -15,6 +15,7 @@ const firebaseConfig = {
   
   // DOM Elements
   const authSection = document.getElementById("auth-section");
+  const bioRegisterBtn = document.getElementById("bio-register-btn"); // Added for registration
   const bioAuthBtn = document.getElementById("bio-auth-btn");
   const authMessage = document.getElementById("auth-message");
   const appSection = document.getElementById("app-section");
@@ -23,6 +24,9 @@ const firebaseConfig = {
   const recipeList = document.getElementById("recipe-list");
   const feedback = document.getElementById("feedback");
   const filterInput = document.getElementById("filter-input");
+  
+  // DOM element for biometric feedback
+  const bioFeedback = document.getElementById("bio-feedback"); // Ensure this element exists in your HTML
   
   let recipes = [];
   
@@ -36,7 +40,7 @@ const firebaseConfig = {
       challenge: Uint8Array.from("randomChallengeForReg", c => c.charCodeAt(0)),
       rp: {
         name: "recipe saver App",
-        id: window.location.hostname  // Use 'localhost' during development if needed.
+        id: window.location.hostname  
       },
       user: {
         id: Uint8Array.from("uniqueUserId", c => c.charCodeAt(0)),
@@ -45,7 +49,7 @@ const firebaseConfig = {
       },
       pubKeyCredParams: [
         { type: "public-key", alg: -7 },   // ES256
-        { type: "public-key", alg: -257 }  // RS256
+        { type: "public-key", alg: -257 }    // RS256
       ],
       authenticatorSelection: {
         authenticatorAttachment: "platform",
@@ -54,7 +58,7 @@ const firebaseConfig = {
       timeout: 60000,
       attestation: "none"
     };
-
+  
     try {
       const credential = await navigator.credentials.create({ publicKey: publicKeyCredentialCreationOptions });
       console.log("Biometric registration credential:", credential);
@@ -65,9 +69,36 @@ const firebaseConfig = {
       bioFeedback.textContent = "Biometric registration failed.";
     }
   });
-
+  
+  // ===== Biometric Authentication (Login) =====
   bioAuthBtn.addEventListener("click", biometricLogin);
   
+  async function biometricLogin() {
+    const publicKeyCredentialRequestOptions = {
+      challenge: Uint8Array.from("randomChallengeForAuth", c => c.charCodeAt(0)),
+      timeout: 60000,
+      rpId: window.location.hostname,
+      userVerification: "preferred"
+    };
+  
+    try {
+      const credential = await navigator.credentials.get({ publicKey: publicKeyCredentialRequestOptions });
+      console.log("Biometric authentication credential:", credential);
+      // Handle successful authentication (e.g., call onAuthenticated)
+      onAuthenticated("demoUser");
+    } catch (error) {
+      console.error("Biometric authentication error:", error);
+      bioFeedback.textContent = "Biometric authentication failed.";
+    }
+  }
+  
+  // Example onAuthenticated function to switch from auth to app section
+  function onAuthenticated(user) {
+    console.log("User authenticated:", user);
+    authSection.style.display = "none";
+    appSection.style.display = "block";
+    loadRecipes();
+  }
   
   function loadRecipes() {
     db.collection("recipes").onSnapshot((snapshot) => {
@@ -101,7 +132,6 @@ const firebaseConfig = {
     });
   }
   
-
   recipeForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const recipeId = document.getElementById("recipe-id").value;
@@ -175,7 +205,7 @@ const firebaseConfig = {
     renderRecipes(filteredRecipes);
   });
   
-
+  // Register Service Worker for offline support
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('/service-worker.js')
@@ -187,3 +217,4 @@ const firebaseConfig = {
         });
     });
   }
+  
