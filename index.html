@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recipe Organizer</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+  <!-- Authentication Section -->
+  <div id="auth-section">
+    <h1>Recipe Organizer</h1>
+    <button id="bio-auth-btn">Login with Biometrics</button>
+    <p id="auth-message" role="alert"></p>
+  </div>
+
+  <!-- Main App Section (hidden until authentication) -->
+  <div id="app-section" style="display:none;">
+    <header>
+      <h1>Recipe Organizer</h1>
+    </header>
+    <!-- Recipe Form -->
+    <section id="recipe-form-section">
+      <form id="recipe-form" aria-label="Add or edit recipe">
+        <input type="hidden" id="recipe-id" />
+        <div class="form-group">
+          <label for="title">Recipe Title:</label>
+          <input type="text" id="title" name="title" required aria-required="true" />
+        </div>
+        <div class="form-group">
+          <label for="ingredients">Ingredients (comma separated):</label>
+          <input type="text" id="ingredients" name="ingredients" required aria-required="true" />
+        </div>
+        <div class="form-group">
+          <label for="mealType">Meal Type:</label>
+          <select id="mealType" name="mealType" required aria-required="true">
+            <option value="">Select meal type</option>
+            <option value="breakfast">Breakfast</option>
+            <option value="lunch">Lunch</option>
+            <option value="dinner">Dinner</option>
+            <option value="snack">Snack</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="favorite">Favorite:</label>
+          <input type="checkbox" id="favorite" name="favorite" />
+        </div>
+        <button type="submit" id="submit-btn">Add Recipe</button>
+      </form>
+      <div id="feedback" role="alert"></div>
+    </section>
+
+    <!-- Filter Section -->
+    <section id="filter-section">
+      <label for="filter-input">Filter by ingredient or meal type:</label>
+      <input type="text" id="filter-input" placeholder="Search recipes..." />
+    </section>
+
+    <!-- Recipe List -->
+    <section id="recipe-list-section">
+      <ul id="recipe-list" aria-live="polite"></ul>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

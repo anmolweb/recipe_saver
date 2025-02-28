@@ -1,0 +1,84 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f5f2;
+    color: #333;
+    margin: 0;
+    padding: 0;
+  }
+  
+  header {
+    background-color: #6a994e;
+    color: #fff;
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  /* Form Styling */
+  #recipe-form-section {
+    padding: 1rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  input[type="text"],
+  select {
+    width: 100%;
+    padding: 0.5rem;
+    box-sizing: border-box;
+  }
+  
+  button {
+    background-color: #6a994e;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #557a3e;
+  }
+  
+  /* Recipe List */
+  #recipe-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .recipe-item {
+    background-color: #fff;
+    margin: 1rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+  }
+  
+  .recipe-item.favorite {
+    border-color: #ffb703;
+  }
+  
+  /* Responsive Layout */
+  @media (min-width: 600px) {
+    #recipe-list {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .recipe-item {
+      flex: 1 1 calc(50% - 2rem);
+      margin: 1rem;
+    }
+  }
+  
+  /* Authentication Section */
+  #auth-section {
+    text-align: center;
+    padding: 2rem;
+  }
+  
